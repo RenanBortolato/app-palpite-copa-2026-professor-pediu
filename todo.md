@@ -11,3 +11,6 @@
 - [x] Tornar campos obrigatórios com validação de erro
 - [x] Criar dropdown com as 32 seleções da Copa 2026
 - [x] Implementar animação de bola chutando pro gol ao enviar
+
+- [x] Adicionar botão pequeno para limpar o formulário
+- [x] Fazer a mensagem de confirmação permanecer na tela até limpar

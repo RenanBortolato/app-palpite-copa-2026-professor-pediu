@@ -19,6 +19,8 @@ export default function HomeScreen() {
   const [nome, setNome] = useState("");
   const [selecao, setSelecao] = useState("");
   const [enviado, setEnviado] = useState(false);
+  const [nomeEnviado, setNomeEnviado] = useState("");
+  const [selecaoEnviada, setSelecaoEnviada] = useState("");
   const [dropdownAberto, setDropdownAberto] = useState(false);
   const [erros, setErros] = useState({ nome: false, selecao: false });
 
@@ -80,8 +82,20 @@ export default function HomeScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
 
-    animarBola();
+    // Guardar os valores enviados
+    setNomeEnviado(nome);
+    setSelecaoEnviada(selecao);
     setEnviado(true);
+    animarBola();
+  }
+
+  function handleLimpar() {
+    setNome("");
+    setSelecao("");
+    setEnviado(false);
+    setNomeEnviado("");
+    setSelecaoEnviada("");
+    setErros({ nome: false, selecao: false });
   }
 
   function selecionarSelecao(s: string) {
@@ -126,6 +140,7 @@ export default function HomeScreen() {
             }}
             returnKeyType="next"
             autoCapitalize="words"
+            editable={!enviado}
           />
           {erros.nome && (
             <Text style={styles.mensagemErro}>Nome é obrigatório</Text>
@@ -138,7 +153,8 @@ export default function HomeScreen() {
           </Text>
           <TouchableOpacity
             style={[styles.dropdown, erros.selecao && styles.inputErro]}
-            onPress={() => setDropdownAberto(true)}
+            onPress={() => !enviado && setDropdownAberto(true)}
+            disabled={enviado}
           >
             <Text
               style={[
@@ -205,25 +221,38 @@ export default function HomeScreen() {
           </Modal>
         </View>
 
-        {/* Botão enviar */}
-        <TouchableOpacity
-          style={[
-            styles.botao,
-            (!nome.trim() || !selecao.trim()) && styles.botaoDesabilitado,
-          ]}
-          onPress={handleEnviar}
-          disabled={!nome.trim() || !selecao.trim()}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.botaoTexto}>Enviar Palpite</Text>
-        </TouchableOpacity>
+        {/* Botões de ação */}
+        <View style={styles.botoesContainer}>
+          <TouchableOpacity
+            style={[
+              styles.botao,
+              (!nome.trim() || !selecao.trim()) && styles.botaoDesabilitado,
+            ]}
+            onPress={handleEnviar}
+            disabled={!nome.trim() || !selecao.trim() || enviado}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.botaoTexto}>Enviar Palpite</Text>
+          </TouchableOpacity>
 
-        {/* Mensagem de confirmação */}
+          {/* Botão Limpar - pequeno */}
+          {enviado && (
+            <TouchableOpacity
+              style={styles.botaoLimpar}
+              onPress={handleLimpar}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.botaoLimparTexto}>🗑️ Limpar</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Mensagem de confirmação - persiste até limpar */}
         {enviado && (
           <View style={styles.confirmacao}>
             <Text style={styles.confirmacaoTexto}>✅ Palpite enviado!</Text>
             <Text style={styles.confirmacaoSubtexto}>
-              {nome} aposta no {selecao}
+              {nomeEnviado} aposta no {selecaoEnviada}
             </Text>
           </View>
         )}
@@ -393,6 +422,10 @@ const styles = StyleSheet.create({
     color: "#006600",
     fontWeight: "700",
   },
+  botoesContainer: {
+    width: "100%",
+    gap: 12,
+  },
   botao: {
     width: "100%",
     backgroundColor: "#006600",
@@ -415,6 +448,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
     letterSpacing: 0.5,
+  },
+  botaoLimpar: {
+    backgroundColor: "#EF4444",
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    alignSelf: "flex-end",
+  },
+  botaoLimparTexto: {
+    color: "#ffffff",
+    fontSize: 13,
+    fontWeight: "600",
   },
   confirmacao: {
     marginTop: 28,
