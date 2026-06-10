@@ -7,3 +7,7 @@
 - [x] Gerar logo personalizado do app
 - [x] Atualizar app.config.ts com nome e logo
 - [x] Ajustar tema de cores (verde/amarelo Copa)
+
+- [x] Tornar campos obrigatórios com validação de erro
+- [x] Criar dropdown com as 32 seleções da Copa 2026
+- [x] Implementar animação de bola chutando pro gol ao enviar
